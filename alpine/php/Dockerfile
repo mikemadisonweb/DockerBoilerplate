@@ -9,13 +9,15 @@ RUN apk --no-cache --update add \
     && rm -rf /tmp/* \
     && rm -rf /var/cache/apk/*
 
-RUN docker-php-ext-configure pdo_pgsql \
+RUN docker-php-ext-configure opcache \
+    && docker-php-ext-configure pdo_pgsql \
     && docker-php-ext-configure xml \
     && docker-php-ext-configure dom \
     && docker-php-ext-configure intl
 
 # Build and install PHP extensions
-RUN docker-php-ext-install pdo_pgsql \
+RUN docker-php-ext-install opcache \
+    pdo_pgsql \
     xml \
     dom \
     intl
