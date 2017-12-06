@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -e
+
+usage () {
+    echo -e "Usage:\nrelease IMAGE [-r REGISTRY:PORT] [-g GROUP] [-p PROJECT]";
+}
+
+# Parse command line options
+IMAGE=""
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -g)
+            GROUP="$2"
+            shift
+            shift
+        ;;
+        -g)
+            GROUP="$2"
+            shift
+            shift
+        ;;
+        -p)
+            PROJECT="$2"
+            shift
+            shift
+        ;;
+        -*)
+            usage
+            exit 1
+        ;;
+        *)
+            if [[ ${IMAGE} != "" ]]; then
+                usage
+                exit 1
+            fi
+            IMAGE="$1"
+            shift
+        ;;
+    esac
+done
+
+# Defaults
+GROUP=${GROUP:-widgets}
+PROJECT=${PROJECT:-core}
+REGISTRY=${REGISTRY:-registry.cpadev.com:4567}
+
+# Change to target image directory
+if [[ !(-d ${IMAGE}) ]]; then
+    usage
+    exit 1
+fi
+cd ${IMAGE}
+
+# Get new version number
+if [[ !(-f "VERSION") ]]; then
+    echo -e "\033[0;31mVERSION file doesn't exist!"
+    exit 1
+fi
+VERSION=`cat VERSION`
+echo "version: $VERSION"
+
+# Build and push
+docker build -t ${GROUP}/${PROJECT}/${IMAGE}:latest .
+docker tag ${GROUP}/${PROJECT}/${IMAGE}:latest ${REGISTRY}/${GROUP}/${PROJECT}/${IMAGE}:latest
+docker tag ${GROUP}/${PROJECT}/${IMAGE}:latest ${REGISTRY}/${GROUP}/${PROJECT}/${IMAGE}:${VERSION}
+docker push ${REGISTRY}/${GROUP}/${PROJECT}/${IMAGE}:latest
+docker push ${REGISTRY}/${GROUP}/${PROJECT}/${IMAGE}:${VERSION}
