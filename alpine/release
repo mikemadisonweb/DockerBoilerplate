@@ -42,9 +42,9 @@ do
 done
 
 # Defaults
-GROUP=${GROUP:-widgets}
-PROJECT=${PROJECT:-core}
-REGISTRY=${REGISTRY:-registry.cpadev.com:4567}
+GROUP=${GROUP:-project}
+PROJECT=${PROJECT:-group}
+REGISTRY=${REGISTRY:-example.registry.com:4567}
 
 # Change to target image directory
 if [[ !(-d ${IMAGE}) ]]; then
