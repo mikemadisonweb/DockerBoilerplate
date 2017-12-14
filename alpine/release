@@ -42,8 +42,8 @@ do
 done
 
 # Defaults
-GROUP=${GROUP:-project}
-PROJECT=${PROJECT:-group}
+GROUP=${GROUP:-group}
+PROJECT=${PROJECT:-project}
 REGISTRY=${REGISTRY:-example.registry.com:4567}
 
 # Change to target image directory
