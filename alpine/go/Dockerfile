@@ -1,6 +1,6 @@
-FROM golang:1.8-alpine
+FROM golang:1.9-alpine
 
-COPY files /
+COPY root /
 
 RUN apk add --update ca-certificates \
     && apk add wget unzip dpkg git \
@@ -11,8 +11,8 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" \
     && chmod -R 777 "$GOPATH" \
-    && chmod +x /entrypoint.sh
+    && chmod +x /entrypoint
 
 WORKDIR $GOPATH
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint"]

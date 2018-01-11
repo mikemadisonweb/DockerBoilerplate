@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+usage () {
+    echo -e "Usage:\nself-signed-cert-gen DOMAIN";
+}
+
+# Parse command line options
+DOMAIN=""
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -*)
+            usage
+            exit 1
+        ;;
+        *)
+            if [[ ${DOMAIN} != "" ]]; then
+                usage
+                exit 1
+            fi
+            DOMAIN="$1"
+            shift
+        ;;
+    esac
+done
+
+echo "Generating an SSL private key to sign your certificate..."
+openssl genrsa \
+    -des3 \
+    -out ${DOMAIN}.key \
+    -passout pass:client11 \
+    1024
+
+echo "Generating a Certificate Signing Request..."
+openssl req \
+    -key ${DOMAIN}.key\
+    -new \
+    -out ${DOMAIN}.csr \
+    -subj "/CN=${DOMAIN}" \
+    -passin pass:client11
+
+echo "Removing passphrase from key (for nginx)..."
+mv ${DOMAIN}.key ${DOMAIN}
+openssl rsa -in ${DOMAIN} -out ${DOMAIN}.key -passin pass:client11
+rm ${DOMAIN}
+
+echo "Generating certificate..."
+openssl x509 -req -days 365 -in ${DOMAIN}.csr -signkey ${DOMAIN}.key -out ${DOMAIN}.crt
+rm ${DOMAIN}.csr
+
+echo "Copying certificate (${DOMAIN}.crt) to root/etc/ssl/certs/"
+mkdir -p root/etc/ssl/certs
+mv ${DOMAIN}.crt root/etc/ssl/certs/
+
+echo "Copying key (${DOMAIN}.key) to root/etc/ssl/private/"
+mkdir -p root/etc/ssl/private
+mv ${DOMAIN}.key root/etc/ssl/private/

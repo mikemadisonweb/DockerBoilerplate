@@ -44,17 +44,17 @@ EOF
     # users if we're recreating the container (provided we're using some persistent storage)
     touch /data/.mongodb_password_set
     echo "MongoDB configured successfully. Database will restart."
-    sleep 3
+    exit 1
 }
 
 cmd="$@"
 if [ ! -f /data/.mongodb_password_set ]; then
     $cmd &
     initdb
-fi
+else
+    if [ "$AUTH" == "yes" ]; then
+        cmd="$cmd --auth"
+    fi
 
-if [ "$AUTH" == "yes" ]; then
-    cmd="$cmd --auth"
+    exec $cmd;
 fi
-
-exec $cmd;
