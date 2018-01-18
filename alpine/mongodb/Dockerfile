@@ -20,7 +20,7 @@ RUN buildDeps='curl tar' \
     && chmod +x /entrypoint.sh
 
 RUN apk add --update bash pwgen \
-    && adduser -h ${MONGODB_INSTALL_DIR} -g mongo -s /bin/bash -D mongo \
+    && adduser -h ${MONGODB_INSTALL_DIR} -g mongo -s /bin/sh -D mongo \
     && for path in \
         ${MONGODB_DATA_DIR} \
         ${MONGODB_DATA_DIR}/db \
