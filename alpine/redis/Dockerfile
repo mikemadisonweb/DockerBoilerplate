@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
 RUN addgroup redis \
 	&& adduser -H -D -s /bin/false -G redis redis

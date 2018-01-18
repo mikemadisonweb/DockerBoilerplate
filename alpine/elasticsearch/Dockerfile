@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
 ARG ES_VERSION=6.0.0
 ARG ES_DIR="/opt"
