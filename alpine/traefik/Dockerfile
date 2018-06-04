@@ -1,0 +1,7 @@
+FROM traefik:1.6-alpine
+
+ADD root /
+
+EXPOSE 80
+EXPOSE 8080
+EXPOSE 443

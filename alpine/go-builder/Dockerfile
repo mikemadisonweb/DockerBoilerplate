@@ -1,9 +1,9 @@
 FROM docker
 
 # Go
-ENV GOLANG_VERSION 1.9.1
+ENV GOLANG_VERSION 1.10.1
 
-RUN apk add --update ca-certificates \
+RUN apk add --no-cache ca-certificates \
         wget \
         git \
         openssl \
@@ -11,8 +11,7 @@ RUN apk add --update ca-certificates \
         gcc \
         make \
         musl-dev \
-        go \
-    && rm /var/cache/apk/*
+        go
 
 RUN export \
         GOROOT_BOOTSTRAP="$(go env GOROOT)" \
@@ -42,7 +41,7 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 # Glide
 ARG GLIDE_VERSION=0.12.3
 ARG GLIDE_DOWNLOAD_URL="https://github.com/Masterminds/glide/releases/download/v${GLIDE_VERSION}/glide-v${GLIDE_VERSION}-linux-amd64.tar.gz"
-ARG COMPOSE_VERSION=1.16.1
+ARG COMPOSE_VERSION=1.21.0
 ENV GLIBC 2.23-r3
 
 RUN wget -q -O glide.tar.gz "$GLIDE_DOWNLOAD_URL" \

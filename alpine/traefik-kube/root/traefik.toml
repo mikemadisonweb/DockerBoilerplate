@@ -1,0 +1,53 @@
+debug = false
+checkNewVersion = true
+logLevel = "WARNING"
+defaultEntryPoints = ["https","http"]
+
+[api]
+  entryPoint = "traefik"
+  dashboard = true
+  [api.statistics]
+[metrics]
+  [metrics.datadog]
+    address = "datadog-agent:8125"
+    pushInterval = "10s"
+
+# Entrypoints, http and https
+[entryPoints]
+  # http should be redirected to https
+  [entryPoints.http]
+  address = ":80"
+  [entryPoints.http.redirect]
+    entryPoint = "https"
+  # https is the default
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+  [entryPoints.https.redirect]
+    regex = "^https://([^.]+).adwidget.ru/(.*)"
+    replacement = "https://$1.adwidgets.ru/$2"
+  [entryPoints.traefik]
+    address = ":8181"
+    [entryPoints.traefik.auth]
+      [entryPoints.traefik.auth.basic]
+        users = [
+          # admin:ER4tsdhvbG
+          "admin:$apr1$77oykQaa$bhb3IuUC/ir4p9HZkDegD/",
+        ]
+[retry]
+
+# Enable ACME (Let's Encrypt): automatic SSL
+[acme]
+# caServer = "https://acme-staging.api.letsencrypt.org/directory"
+email = "m.bakulin@admitad.com"
+storage = "/acme/acme.json" # or "traefik/acme/account" if using KV store
+onDemand = false
+OnHostRule = true
+entryPoint = "https"
+[acme.httpChallenge]
+  entryPoint = "http"
+
+[kubernetes]
+# Kubernetes server endpoint
+endpoint = "https://localhost:6443"
+certAuthFilePath = "/etc/kubernetes/pki/ca.crt"

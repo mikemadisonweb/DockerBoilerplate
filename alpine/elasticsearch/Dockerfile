@@ -1,13 +1,14 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
-ARG ES_VERSION=6.0.0
+ARG ES_VERSION=6.2.3
 ARG ES_DIR="/opt"
 
-RUN apk add --update openjdk8-jre openssl wget bash && \
+RUN apk add --no-cache openjdk8-jre openssl wget bash && \
     mkdir -p ${ES_DIR}
 
 ENV PATH ${ES_DIR}/elasticsearch/bin:$PATH
 ENV ES_JAVA_OPTS="-Xms1g -Xmx1g"
+ENV ES_TMPDIR="/tmp"
 
 RUN wget -q -O - "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz" | tar -zxf - && \
     mv -v elasticsearch-${ES_VERSION} ${ES_DIR}/elasticsearch

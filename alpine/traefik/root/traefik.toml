@@ -1,0 +1,28 @@
+debug = false
+checkNewVersion = true
+logLevel = "WARNING"
+defaultEntryPoints = ["http"]
+
+[api]
+  entryPoint = "traefik"
+  dashboard = true
+[metrics]
+  [metrics.statistics]
+    recentErrors = 10
+
+# Entrypoints, http and https
+[entryPoints]
+  # http should be redirected to https
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+    regex = "^http://(.*).loc/(.*)"
+    replacement = "http://$1.local/$2"
+
+[retry]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "docker.localhost"
+watch = true
+exposedbydefault = false

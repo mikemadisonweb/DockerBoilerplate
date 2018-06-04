@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
 ARG VERSION=2.5.0
 
@@ -7,7 +7,7 @@ COPY root /
 ENV DATABASE_DIR=/geo
 ENV CONFIG_FILE=${DATABASE_DIR}/geoip.conf
 
-RUN apk add --update \
+RUN apk add --no-cache \
         bash \
         wget \
         build-base \
@@ -24,13 +24,10 @@ RUN apk add --update \
     && make install \
     && cd .. \
     && rm -rf ./geoipupdate-${VERSION} \
-    && rm -rf /var/cache/apk/* \
     && mkdir /geo \
     && chown -R 1000:1000 /geo \
-    && chmod +x /entrypoint
+    && chmod +x /entrypoint.sh
 
-USER 1000
-
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["geoipupdate"]

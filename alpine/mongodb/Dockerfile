@@ -1,26 +1,26 @@
 FROM frolvlad/alpine-glibc:alpine-3.7
 
-ARG MONGODB_VERSION="3.6.1"
+ARG MONGODB_VERSION="3.6.4"
 ARG	MONGODB_DOWNLOAD_URL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGODB_VERSION}.tgz"
 ENV MONGODB_INSTALL_DIR="/usr/src/mongo"
 ENV MONGODB_DATA_DIR="/data"
+ENV TZ="Europe/Moscow"
 
 COPY root /
 
 RUN buildDeps='curl tar' \
     && set -x \
-    && apk add --update $buildDeps \
+    && apk add --no-cache $buildDeps \
 	&& curl -sSL "${MONGODB_DOWNLOAD_URL}" -o mongo.tar.gz \
 	&& mkdir -p ${MONGODB_INSTALL_DIR} \
 	&& tar -xzf mongo.tar.gz -C ${MONGODB_INSTALL_DIR} --strip-components=1 \
 	&& rm -f mongo.tar.gz \
 	&& cd ${MONGODB_INSTALL_DIR} \
 	&& apk del $buildDeps \
-	&& rm -rf /var/cache/apk/* \
     && chmod +x /entrypoint.sh
 
-RUN apk add --update bash pwgen \
-    && adduser -h ${MONGODB_INSTALL_DIR} -g mongo -s /bin/bash -D mongo \
+RUN apk add --no-cache bash pwgen \
+    && adduser -h ${MONGODB_INSTALL_DIR} -g mongo -s /bin/sh -D mongo \
     && for path in \
         ${MONGODB_DATA_DIR} \
         ${MONGODB_DATA_DIR}/db \
